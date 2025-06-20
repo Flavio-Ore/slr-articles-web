@@ -7,26 +7,30 @@ import { cn } from '#/lib/utils'
 import { checkIsValidPdfUrl } from '#/utils/check-is-valid-pdf-url'
 import { Button } from '#shadcn/button'
 import { Input } from '#shadcn/input'
-import { Plus } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
-
+import { LoaderCircleIcon, Plus } from 'lucide-react'
+import { useActionState, useEffect, useMemo, useState } from 'react'
+import { useFormStatus } from 'react-dom'
+import { toast } from 'sonner'
 export default function SlrForm () {
-  const [inputValue, setInputValue] = useState<string>('')
-  const debouncedValue = useDebounce(inputValue)
-  const [pdfUrls, setPdfUrls] = useState(new Set<string>())
-  const [isError, setIsError] = useState<boolean>(false)
-
-  const [slrAnalysisState, action] = useFormState(srlAnalysis, {
-    pdfUrls,
-    message: 'useFormState initial state',
-    slrAnalysis: [],
-    success: true
-  })
-
+  const [slrAnalysisState, slrAnalysisFormAction] = useActionState(
+    srlAnalysis,
+    {
+      pdfUrls: new Set<string>(),
+      message: 'useFormState initial state',
+      slrAnalysis: [],
+      success: false
+    }
+  )
   console.log({
     slrAnalysisState
   })
+
+  const [inputValue, setInputValue] = useState<string>('')
+  const debouncedValue = useDebounce(inputValue)
+  const [pdfUrls, setPdfUrls] = useState(
+    new Set<string>(slrAnalysisState.pdfUrls)
+  )
+  const [isError, setIsError] = useState<boolean>(false)
 
   const isRepeatedPdfUrl = useMemo(
     () => pdfUrls.has(debouncedValue),
@@ -39,8 +43,33 @@ export default function SlrForm () {
     [debouncedValue, pdfUrls]
   )
 
+  useEffect(() => {
+    if (slrAnalysisState.success) {
+      toast.success(slrAnalysisState.message, {
+        description: 'SLR analysis started successfully with the provided PDFs.'
+      })
+    } else if (slrAnalysisState.message) {
+      toast.error(slrAnalysisState.message, {
+        description: 'There was an error starting the SLR analysis.'
+      })
+    }
+  }, [slrAnalysisState.success])
+
   return (
-    <form action={action} className='w=full flex flex-col gap-y-1'>
+    <form
+      action={slrAnalysisFormAction}
+      className='w=full flex flex-col gap-y-1'
+    >
+      {pdfUrls.size > 0 &&
+        Array.from(pdfUrls).map(url => (
+          <input
+            key={url}
+            type='hidden'
+            name='pdfUrls'
+            className='hidden'
+            value={url}
+          />
+        ))}
       <div className='flex flex-col mb-4 gap-y-2'>
         {!isValidPdfUrl && debouncedValue !== '' && (
           <span className='text-red-600 mt-2'>
@@ -72,7 +101,6 @@ export default function SlrForm () {
             onChange={e => setInputValue(e.target.value)}
             placeholder='Enter your Scientific Article PDF URL...'
             pattern='https?://.+\.pdf'
-            required
           />
           <Button
             type='button'
@@ -141,30 +169,27 @@ export default function SlrForm () {
           </ul>
         </div>
       )}
-      <SubmitButton pdfUrlsSize={pdfUrls.size} isError={isError} />
+      <SubmitButton isDisabled={pdfUrls.size <= 0} />
     </form>
   )
 }
 
-export function SubmitButton ({
-  pdfUrlsSize = 0,
-  isError = false
-}: {
-  pdfUrlsSize?: number
-  isError?: boolean
-}) {
+export function SubmitButton ({ isDisabled = false }: { isDisabled?: boolean }) {
   const formStatus = useFormStatus()
   return (
     <Button
       type='submit'
       className='mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
-      disabled={pdfUrlsSize === 0 || isError}
+      disabled={isDisabled}
     >
-      {formStatus.pending
-        ? 'Submitting...'
-        : pdfUrlsSize > 0
-        ? 'Start Systematic Literature Review'
-        : 'Add PDF URLs to start SLR'}
+      {formStatus.pending ? (
+        <LoaderCircleIcon
+          className='inline-block mr-2 animate-spin'
+          size={28}
+        />
+      ) : (
+        <span className='text-sm font-semibold'>START SLR ANALYSIS</span>
+      )}
     </Button>
   )
 }
