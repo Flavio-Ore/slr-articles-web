@@ -1,14 +1,8 @@
 import Footer from '#/components/footer'
+import GeminiIcon from '#/components/icons/gemini-icon'
+import NextjsIcon from '#/components/icons/nextjs-icon'
 import { ModeToggle } from '#/components/mode-toggle'
-import PdfUrlManager from '#/components/pdf-url-manager'
-
-export async function serverSideProps () {
-  // This function can be used to fetch data or perform server-side operations
-  // before rendering the page. Currently, it does nothing.
-  return {
-    props: {}
-  }
-}
+import SlrForm from '#/components/srl-form'
 
 export default async function RootHome () {
   console.log({
@@ -16,26 +10,33 @@ export default async function RootHome () {
   })
   return (
     <div className='flex min-h-screen flex-col items-center justify-between'>
-      <main className='space-y-12 py-8 px-4 lg:px-0 lg:py-12'>
-        <header className='text-center'>
-          <h1 className='text-3xl font-bold mb-4 text-cyan-950 dark:text-cyan-400'>
-            Systematic Literature Review Articles
-          </h1>
-          <p className='text-base text-cyan-600'>
-            Powered by Gemini AI and Next.js, this platform allows you to manage
-            and view PDF articles related to Systematic Literature Reviews
-            (SLRs). You can add PDF URLs, and the system will validate them
-            before displaying the articles. The platform is designed to be
-            user-friendly, with a focus on accessibility and ease of use.
-          </p>
+      <main className='space-y-12 py-8 px-4 lg:px-0 lg:py-12 w-full max-w-3xl'>
+        <header className='relative text-center space-y-6'>
+          <div className='space-y-3'>
+            <h1 className='text-4xl font-bold text-slate-800 dark:text-slate-100 tracking-tight'>
+              Systematic Literature Review
+            </h1>
+            <h2 className='text-xl text-slate-600 dark:text-slate-400 font-medium'>
+              Articles, Search and Analysis
+            </h2>
+          </div>
+          <div className='flex items-center justify-center space-x-3 text-sm text-slate-500 dark:text-slate-400'>
+            <span>Powered by</span>
+            <GeminiIcon className='h-5 w-5' />
+            <span className='font-medium'>Gemini AI</span>
+            <span>•</span>
+            <NextjsIcon className='h-5 w-5' />
+            <span className='font-medium'>Next.js</span>
+          </div>
+          <div className='absolute top-4 right-4'>
+            <ModeToggle />
+          </div>
         </header>
-        <PdfUrlManager />
+
+        <SlrForm />
       </main>
 
       <Footer />
-      <div className='fixed bottom-4 right-4'>
-        <ModeToggle />
-      </div>
     </div>
   )
 }
