@@ -25,7 +25,10 @@
     "paths": {
       "#/*": [
         "./src/*"
-      ]
+      ],
+      "#shadcn/*": [
+        "./src/components/ui/*"
+      ],
     }
   },
   "include": [
@@ -35,6 +38,7 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
+    ".nextjs",
     "node_modules"
   ]
 }

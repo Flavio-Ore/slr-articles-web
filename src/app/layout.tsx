@@ -1,4 +1,5 @@
 import { ThemeProvider } from '#/components/providers/theme-provider'
+import { Toaster } from '#/components/ui/sonner'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { ReactNode } from 'react'
@@ -20,17 +21,20 @@ export const metadata: Metadata = {
     template: '%s | SLR Articles'
   },
   description:
-    'A curated collection of Systematic Literature Review (SLR) articles and research papers on various topics.',
+    'This platform allows you to manage and view PDF articles related to Systematic Literature Reviews (SLRs).',
   keywords: [
     'Systematic Literature Review',
     'SLR',
+    'AI',
+    'artificial intelligence',
     'research papers',
     'academic articles',
-    'science'
+    'science',
+    'pdf'
   ],
   authors: [{ name: 'Your Name or Organization' }],
-  creator: 'Your Name or Organization',
-  publisher: 'Your Name or Organization',
+  creator: 'Flavio Gonzalo Oré',
+  publisher: 'Flavio Gonzalo Oré',
   robots: {
     index: true,
     follow: true,
@@ -42,23 +46,23 @@ export const metadata: Metadata = {
       'max-snippet': -1
     }
   },
-  alternates: {
-    canonical: 'https://slr-articles.com' // Replace with your actual domain
-  },
+  // alternates: {
+  //   canonical: 'https://slr-articles.com' // Replace with your actual domain
+  // },
   openGraph: {
     title: 'SLR Articles',
     description:
       'A curated collection of Systematic Literature Review (SLR) articles and research papers.',
-    url: 'https://slr-articles.com', // Replace with your actual domain
+    // url: 'https://slr-articles.com', // Replace with your actual domain
     siteName: 'SLR Articles',
-    images: [
-      {
-        url: '/og-image.png', // Replace with your actual OG image path
-        width: 1200,
-        height: 630,
-        alt: 'SLR Articles'
-      }
-    ],
+    // images: [
+    //   {
+    //     url: '/og-image.png', // Replace with your actual OG image path
+    //     width: 1200,
+    //     height: 630,
+    //     alt: 'SLR Articles'
+    //   }
+    // ],
     locale: 'en_US',
     type: 'website'
   }
@@ -85,6 +89,7 @@ export default function RootLayout ({
         >
           {children}
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   )
