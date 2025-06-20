@@ -1,8 +1,8 @@
+import SlrForm from '#/app/(slr)/components/srl-form'
 import Footer from '#/components/footer'
 import GeminiIcon from '#/components/icons/gemini-icon'
 import NextjsIcon from '#/components/icons/nextjs-icon'
 import { ModeToggle } from '#/components/mode-toggle'
-import SlrForm from '#/components/srl-form'
 
 export default async function RootHome () {
   console.log({
