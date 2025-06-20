@@ -7,7 +7,7 @@ import { cn } from '#/lib/utils'
 import { checkIsValidPdfUrl } from '#/utils/check-is-valid-pdf-url'
 import { Button } from '#shadcn/button'
 import { Input } from '#shadcn/input'
-import { LoaderCircleIcon, Plus } from 'lucide-react'
+import { LinkIcon, LoaderCircleIcon, Plus, TrashIcon } from 'lucide-react'
 import { useActionState, useEffect, useMemo, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { toast } from 'sonner'
@@ -24,7 +24,6 @@ export default function SlrForm () {
   console.log({
     slrAnalysisState
   })
-
   const [inputValue, setInputValue] = useState<string>('')
   const debouncedValue = useDebounce(inputValue)
   const [pdfUrls, setPdfUrls] = useState(
@@ -46,6 +45,7 @@ export default function SlrForm () {
   useEffect(() => {
     if (slrAnalysisState.success) {
       toast.success(slrAnalysisState.message, {
+        position: 'bottom-center',
         description: 'SLR analysis started successfully with the provided PDFs.'
       })
     } else if (slrAnalysisState.message) {
@@ -53,7 +53,7 @@ export default function SlrForm () {
         description: 'There was an error starting the SLR analysis.'
       })
     }
-  }, [slrAnalysisState.success])
+  }, [slrAnalysisState])
 
   return (
     <form
@@ -139,57 +139,76 @@ export default function SlrForm () {
       {pdfUrls.size > 0 && (
         <div className='flex flex-col gap-y-2'>
           <h3 className='text-xl font-semibold'>Selected PDFs:</h3>
-          <ul className='flex flex-col list-disc pl-5 mt-2'>
+          <ul className='grid gap-3'>
             {Array.from(pdfUrls).map((url, index) => (
-              <li key={index} className='mb-3'>
-                <div className='flex items-center justify-between bg-slate-900 border border-slate-950 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow'>
+              <li
+                key={url}
+                className='group flex items-center gap-3 p-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.01]'
+              >
+                <div className='flex-shrink-0 p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg'>
+                  <LinkIcon
+                    className='text-blue-600 dark:text-blue-400'
+                    size={18}
+                  />
+                </div>
+
+                <div className='flex-1 min-w-0'>
                   <a
                     href={url}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='block text-gray-300 hover:text-gray-500 text-sm break-all'
+                    className='block text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium truncate transition-colors duration-200 text-wrap'
+                    title={url}
                   >
                     {url}
                   </a>
-                  <Button
-                    className='text-red-900 hover:text-red-700 hover:cursor-pointer p-4 text-xs bg-slate-900 border border-red-950 rounded-md disabled:opacity-50 disabled:cursor-not-allowed'
-                    onClick={() =>
-                      setPdfUrls(prev => {
-                        const newSet = new Set(prev)
-                        newSet.delete(url)
-                        return newSet
-                      })
-                    }
-                  >
-                    Remove
-                  </Button>
+                  <p className='text-xs text-slate-500 dark:text-slate-400 mt-1'>
+                    PDF #{index + 1}
+                  </p>
                 </div>
+
+                <Button
+                  type='button'
+                  variant='outline'
+                  size='sm'
+                  className='flex-shrink-0 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-800/20 border-red-200 dark:border-red-800 hover:cursor-pointer transition-colors duration-200 opacity-80 group-hover:opacity-100'
+                  onClick={() =>
+                    setPdfUrls(prevUrls => {
+                      const newUrls = new Set(prevUrls)
+                      newUrls.delete(url)
+                      return newUrls
+                    })
+                  }
+                >
+                  <TrashIcon size={16} className='inline-block' />
+                </Button>
               </li>
             ))}
           </ul>
         </div>
       )}
-      <SubmitButton isDisabled={pdfUrls.size <= 0} />
+      <SubmitButton isDisabled={pdfUrls.size === 0} />
     </form>
   )
 }
-
 export function SubmitButton ({ isDisabled = false }: { isDisabled?: boolean }) {
   const formStatus = useFormStatus()
   return (
     <Button
       type='submit'
-      className='mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+      className='mt-6 px-8 py-5 bg-blue-600 dark:bg-blue-300 hover:bg-blue-700 text-white dark:text-black text-lg font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.01] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-blue-600 hover:cursor-pointer'
       disabled={isDisabled}
     >
-      {formStatus.pending ? (
-        <LoaderCircleIcon
-          className='inline-block mr-2 animate-spin'
-          size={28}
-        />
-      ) : (
-        <span className='text-sm font-semibold'>START SLR ANALYSIS</span>
-      )}
+      <div className='flex items-center justify-center gap-3'>
+        {formStatus.pending ? (
+          <>
+            <LoaderCircleIcon className='animate-spin' size={20} />
+            <span>Analyzing PDFs...</span>
+          </>
+        ) : (
+          <span>Start Analysis!</span>
+        )}
+      </div>
     </Button>
   )
 }
