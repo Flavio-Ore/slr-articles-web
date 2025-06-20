@@ -7,7 +7,13 @@ import { cn } from '#/lib/utils'
 import { checkIsValidPdfUrl } from '#/utils/check-is-valid-pdf-url'
 import { Button } from '#shadcn/button'
 import { Input } from '#shadcn/input'
-import { LinkIcon, LoaderCircleIcon, Plus, TrashIcon } from 'lucide-react'
+import {
+  LinkIcon,
+  LoaderCircleIcon,
+  PlusIcon,
+  TrashIcon,
+  XIcon
+} from 'lucide-react'
 import { useActionState, useEffect, useMemo, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { toast } from 'sonner'
@@ -45,8 +51,15 @@ export default function SlrForm () {
   useEffect(() => {
     if (slrAnalysisState.success) {
       toast.success(slrAnalysisState.message, {
-        position: 'bottom-center',
-        description: 'SLR analysis started successfully with the provided PDFs.'
+        id: 'slr-analysis-success',
+        richColors: true,
+        position: 'top-center',
+        action: {
+          label: <XIcon size={16} className='inline-block' />,
+          onClick: () => {
+            toast.dismiss('slr-analysis-success')
+          }
+        }
       })
     } else if (slrAnalysisState.message) {
       toast.error(slrAnalysisState.message, {
@@ -56,10 +69,7 @@ export default function SlrForm () {
   }, [slrAnalysisState])
 
   return (
-    <form
-      action={slrAnalysisFormAction}
-      className='w=full flex flex-col gap-y-1'
-    >
+    <form action={slrAnalysisFormAction} className='flex flex-col gap-y-1'>
       {pdfUrls.size > 0 &&
         Array.from(pdfUrls).map(url => (
           <input
@@ -71,32 +81,35 @@ export default function SlrForm () {
           />
         ))}
       <div className='flex flex-col mb-4 gap-y-2'>
-        {!isValidPdfUrl && debouncedValue !== '' && (
-          <span className='text-red-600 mt-2'>
+        {isRepeatedPdfUrl && debouncedValue !== '' && (
+          <span className='text-red-500 dark:text-red-400 mt-2'>
+            This PDF has already been added.
+          </span>
+        )}
+        {!isValidPdfUrl && !isRepeatedPdfUrl && debouncedValue !== '' && (
+          <span className='text-red-500 dark:text-red-400 mt-2'>
             Please enter a valid PDF URL.
           </span>
         )}
         {isValidPdfUrl && debouncedValue !== '' && (
           <span className='text-green-600 text-sm'>Valid PDF URL</span>
         )}
-        <div className='flex flex-row gap-2 items-center'>
+        <div className='flex flex-row gap-x-2 items-center'>
           <Input
             type='text'
+            name='pdfUrls'
             aria-label='PDF URL'
-            className={cn(
-              'flex-1 px-2 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2',
-              {
-                'focus:ring-purple-900': !isValidPdfUrl && !isRepeatedPdfUrl,
-                'border-red-500':
-                  isError || (!isValidPdfUrl && debouncedValue !== ''),
-                'border-green-500':
-                  isValidPdfUrl && !isRepeatedPdfUrl && !isError,
-                'focus:ring-red-500':
-                  isError || (!isValidPdfUrl && debouncedValue !== ''),
-                'focus:ring-green-500':
-                  isValidPdfUrl && !isRepeatedPdfUrl && !isError
-              }
-            )}
+            className={cn('px-2 py-6 border border-sky-900 rounded-md', {
+              'focus:ring-purple-900': !isValidPdfUrl && !isRepeatedPdfUrl,
+              'border-red-500':
+                isError || (!isValidPdfUrl && debouncedValue !== ''),
+              'border-green-500':
+                isValidPdfUrl && !isRepeatedPdfUrl && !isError,
+              'focus:ring-red-500':
+                isError || (!isValidPdfUrl && debouncedValue !== ''),
+              'focus:ring-green-500':
+                isValidPdfUrl && !isRepeatedPdfUrl && !isError
+            })}
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             placeholder='Enter your Scientific Article PDF URL...'
@@ -104,9 +117,16 @@ export default function SlrForm () {
           />
           <Button
             type='button'
+            className={cn(
+              'p-6 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 hover:cursor-pointer',
+              {
+                'bg-red-500/70 hover:bg-red-600 text-white':
+                  !isValidPdfUrl || isRepeatedPdfUrl || isError
+              }
+            )}
             onClick={e => {
               e.preventDefault()
-              if (!debouncedValue) {
+              if (!inputValue) {
                 setIsError(true)
                 return
               }
@@ -120,16 +140,9 @@ export default function SlrForm () {
                 setInputValue('')
               }
             }}
-            className={cn(
-              'px-4 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 hover:cursor-pointer',
-              {
-                'bg-red-700 opacity-50 cursor-not-allowed':
-                  !isValidPdfUrl || isRepeatedPdfUrl || isError
-              }
-            )}
             disabled={!isValidPdfUrl || isRepeatedPdfUrl || isError}
           >
-            <Plus size={18} className='inline-block' />
+            <PlusIcon className='size-6' />
           </Button>
         </div>
         {!isError && debouncedValue && (
@@ -138,7 +151,7 @@ export default function SlrForm () {
       </div>
       {pdfUrls.size > 0 && (
         <div className='flex flex-col gap-y-2'>
-          <h3 className='text-xl font-semibold'>Selected PDFs:</h3>
+          <h3 className='text-xl font-semibold'>Selected Documents:</h3>
           <ul className='grid gap-3'>
             {Array.from(pdfUrls).map((url, index) => (
               <li
@@ -157,7 +170,7 @@ export default function SlrForm () {
                     href={url}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='block text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium truncate transition-colors duration-200 text-wrap'
+                    className='block text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 text-sm md:break-normal break-all overflow-ellipsis font-medium truncate transition-colors duration-200 text-wrap'
                     title={url}
                   >
                     {url}
@@ -180,7 +193,7 @@ export default function SlrForm () {
                     })
                   }
                 >
-                  <TrashIcon size={16} className='inline-block' />
+                  <TrashIcon size={18} />
                 </Button>
               </li>
             ))}
@@ -193,6 +206,7 @@ export default function SlrForm () {
 }
 export function SubmitButton ({ isDisabled = false }: { isDisabled?: boolean }) {
   const formStatus = useFormStatus()
+
   return (
     <Button
       type='submit'
