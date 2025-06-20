@@ -1,3 +1,4 @@
+import { ThemeProvider } from '#/components/providers/theme-provider'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { ReactNode } from 'react'
@@ -69,14 +70,21 @@ export default function RootLayout ({
   children: ReactNode
 }>) {
   return (
-    <html lang='en' className={geistSans.className}>
+    <html lang='en' suppressHydrationWarning>
       <head>
         <meta name='theme-color' content='#ffffff' />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
