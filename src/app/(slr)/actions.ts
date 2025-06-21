@@ -2,7 +2,6 @@
 
 import type { SlrAnalysis } from '#/schemas/slr-analysis-response.schema'
 import { revalidatePath } from 'next/cache'
-import { slrAnalyzer } from './services/slr-analyzer'
 
 interface SrlAnalysisResponse {
   slrAnalysis: SlrAnalysis[]
@@ -18,16 +17,22 @@ export async function srlAnalysis (
   },
   formData: FormData
 ) {
-  const pdfUrls = formData.getAll('pdfUrls') as string[]
+  const rawpdfUrls = formData.getAll('pdfUrls') as string[]
+  const pdfUrls = new Set<string>(rawpdfUrls.filter(url => url.trim() !== ''))
 
   console.log({
     pdfUrlList: Array.from(pdfUrls)
   })
 
   try {
-    const slrAnalysis = await slrAnalyzer({
-      pdfUrls: pdfUrls
-    })
+    //   const slrAnalysis = await slrAnalyzer({
+    //     pdfUrls: pdfUrls
+    //   })
+
+    const slrAnalysis = Array.from(pdfUrls).map((url, index) => ({
+      title: `Article ${index + 1}`,
+      url
+    }))
 
     console.log({
       slrAnalysis

@@ -62,10 +62,17 @@ export async function slrAnalyzer ({
   }
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-2.0-flash-exp', // Use the most efficient model
     contents: PROMPT,
     config: {
-      responseMimeType: 'application/json'
+      responseMimeType: 'application/json',
+      maxOutputTokens: 4096, // Limit output tokens
+      temperature: 0, // Reduce randomness for more consistent results
+      topP: 0.8, // Lower topP for more focused responses
+      topK: 20, // Limit vocabulary for more deterministic output
+      thinkingConfig: {
+        includeThoughts: false // Already good - saves tokens
+      }
     }
   })
 
