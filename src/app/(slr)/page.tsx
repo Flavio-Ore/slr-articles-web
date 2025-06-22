@@ -5,9 +5,6 @@ import NextjsIcon from '#/components/icons/nextjs-icon'
 import { ModeToggle } from '#/components/mode-toggle'
 
 export default async function RootHome () {
-  console.log({
-    alive: 'alive'
-  })
   return (
     <div className='flex min-h-screen flex-col items-center justify-between'>
       <main className='space-y-12 py-8 px-4 lg:px-0 lg:py-12 w-full max-w-3xl'>

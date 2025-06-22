@@ -2,6 +2,7 @@
 
 import type { SlrAnalysis } from '#/schemas/slr-analysis-response.schema'
 import { revalidatePath } from 'next/cache'
+import { slrAnalyzer } from './services/slr-analyzer'
 
 interface SrlAnalysisResponse {
   slrAnalysis: SlrAnalysis[]
@@ -17,26 +18,40 @@ export async function srlAnalysis (
   },
   formData: FormData
 ) {
-  const rawpdfUrls = formData.getAll('pdfUrls') as string[]
-  const pdfUrls = new Set<string>(rawpdfUrls.filter(url => url.trim() !== ''))
+  const pdfUrls = Array.from(formData.getAll('pdfUrls') as string[])
+  const pdfUrlsOrders = Array.from(formData.getAll('pdfUrls-order') as string[])
 
-  console.log({
-    pdfUrlList: Array.from(pdfUrls)
-  })
+  const localPdfFiles = Array.from(formData.getAll('localPdfFiles') as File[])
+  const localPdfsOrders = Array.from(
+    formData.getAll('localPdfs-order') as string[]
+  )
 
+  const pdfUrlsWithOrder = pdfUrls.map((url, index) => ({
+    type: 'url' as const,
+    value: url,
+    order: parseInt(pdfUrlsOrders[index] || '0', 10)
+  }))
+
+  const pdfFilesWithOrder = localPdfFiles.map((file, index) => ({
+    type: 'file' as const,
+    value: file,
+    order: parseInt(localPdfsOrders[index] || '0', 10)
+  }))
+
+  const pdfsToAnalyze = [...pdfUrlsWithOrder, ...pdfFilesWithOrder]
+    .sort((a, b) => a.order - b.order)
+    .map(pdf => pdf.value)
+    .filter(pdf => pdf != null && pdf !== '')
+
+  console.log({ allPdfs: pdfsToAnalyze })
   try {
-    //   const slrAnalysis = await slrAnalyzer({
-    //     pdfUrls: pdfUrls
-    //   })
-
-    const slrAnalysis = Array.from(pdfUrls).map((url, index) => ({
-      title: `Article ${index + 1}`,
-      url
-    }))
-
-    console.log({
-      slrAnalysis
+    const slrAnalysis = await slrAnalyzer({
+      pdfs: pdfsToAnalyze
     })
+
+    // console.log({
+    //   slrAnalysis
+    // })
 
     revalidatePath('/')
     return {
