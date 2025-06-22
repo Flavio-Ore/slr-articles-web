@@ -1,10 +1,18 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
-    viewTransition: true
+    viewTransition: true,
+    serverActions: {
+      bodySizeLimit: '4mb',
+      allowedOrigins: [
+        process.env.IS_LOCAL
+          ? 'http://localhost:3000/'
+          : process.env.PRODUCTION_URL || 'http://localhost:3000/'
+      ]
+    }
   }
-};
+}
 
-export default nextConfig;
+export default nextConfig
