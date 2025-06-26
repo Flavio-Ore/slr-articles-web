@@ -18,6 +18,13 @@ const promptParts: (string | Part)[] = [
       - resume: A brief summary or abstract of the paper.
       - keywords: A list of keywords.
       - conclusion: The main conclusion of the paper.
+  
+      **For Word Frequency and Text Analysis:**
+      - mostFrequentWords: Array of the 10 most frequent meaningful words (excluding stop words) with their counts [{"word": "machine", "count": 45}, {"word": "learning", "count": 38}].
+      - titleWords: Array of words from the title for title word cloud analysis.
+      - abstractWords: Array of the 10 most frequent words from the abstract.
+      - technicalTerms: Array of the 10 most frequent technical terms, acronyms, and specialized vocabulary found in the paper.
+      - citedAuthors: Array of the most cited authors mentioned in references (top 10).
 
       The output must be a single JSON array of objects. Each object should represent one paper. Do not include any other text or explanations outside of the JSON array. If a value is not found, use null.
 
@@ -39,7 +46,17 @@ const promptParts: (string | Part)[] = [
           "quartiles": "Q1",
           "resume": "This paper provides a comprehensive survey of recent advancements in large language models...",
           "keywords": ["LLM", "NLP", "Artificial Intelligence", "Survey"],
-          "conclusion": "In conclusion, LLMs have shown remarkable capabilities but also present significant challenges..."
+          "conclusion": "In conclusion, LLMs have shown remarkable capabilities but also present significant challenges...", 
+          "mostFrequentWords": [
+            {"word": "machine", "count": 89},
+            {"word": "learning", "count": 76},
+            {"word": "healthcare", "count": 65},
+            {"word": "diagnosis", "count": 45},
+            {"word": "treatment", "count": 40}
+          ],
+          "titleWords": ["Machine", "Learning", "Healthcare", "Comprehensive", "Review"],
+          "abstractWords": ["machine", "learning", "healthcare", "diagnosis", "treatment", "accuracy"],
+          "technicalTerms": ["CNN", "RNN", "SVM", "Random Forest", "Deep Learning"],
         }
       ]
       `
