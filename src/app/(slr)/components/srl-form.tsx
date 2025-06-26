@@ -345,7 +345,7 @@ export function SubmitButton ({ isDisabled = false }: { isDisabled?: boolean }) 
     <Button
       type='submit'
       className='group px-8 py-5 bg-black dark:bg-white hover:bg-sky-500 dark:hover:bg-amber-200 text-white dark:text-black text-lg font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.01] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sky-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-gray-300 hover:cursor-pointer'
-      disabled={isDisabled}
+      disabled={isDisabled || formStatus.pending}
     >
       <div className='flex items-center justify-center gap-3'>
         {formStatus.pending ? (
