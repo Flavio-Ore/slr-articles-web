@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
     serverActions: {
-      bodySizeLimit: '4mb',
+      bodySizeLimit: '6mb',
       allowedOrigins: [
         process.env.IS_LOCAL
           ? 'http://localhost:3000/'

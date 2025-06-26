@@ -76,17 +76,49 @@ export default function SlrForm () {
   return (
     <div className='flex flex-col'>
       <form action={slrAnalysisFormAction} className='flex flex-col gap-y-6'>
-        {pdfs.size > 0 &&
-          Array.from(pdfs).map(pdf => (
-            <input
-              key={typeof pdf === 'string' ? pdf : pdf.name}
-              type='hidden'
-              name={typeof pdf === 'string' ? 'pdfUrls' : 'localPdfs'}
-              className='hidden'
-              data-order={Array.from(pdfs).indexOf(pdf)}
-              value={typeof pdf === 'string' ? pdf : ''}
-            />
+        {Array.from(pdfs)
+          .filter((pdf): pdf is string => typeof pdf === 'string')
+          .filter(
+            pdfUrl => pdfUrl.startsWith('http') || pdfUrl.startsWith('https')
+          )
+          .map((pdfUrl, index) => (
+            <div key={`url-${pdfUrl}-${index}`}>
+              <input type='hidden' name='pdfUrls' value={pdfUrl} />
+              <input
+                type='hidden'
+                name='pdfUrls-order'
+                value={index.toString()}
+              />
+            </div>
           ))}
+
+        {Array.from(pdfs)
+          .filter((pdf): pdf is File => pdf instanceof File)
+          .map((file, fileIndex) => {
+            const globalIndex = Array.from(pdfs).indexOf(file)
+            return (
+              <div key={`file-${file.name}-${fileIndex}`}>
+                <input
+                  type='file'
+                  name='localPdfFiles'
+                  style={{ display: 'none' }}
+                  ref={el => {
+                    if (!el) {
+                      return
+                    }
+                    const dt = new DataTransfer()
+                    dt.items.add(file)
+                    el.files = dt.files
+                  }}
+                />
+                <input
+                  type='hidden'
+                  name='localPdfs-order'
+                  value={globalIndex.toString()}
+                />
+              </div>
+            )
+          })}
         <div className='flex flex-col gap-y-2'>
           <div className='flex flex-row gap-x-2 items-center'>
             <Input
@@ -313,7 +345,7 @@ export function SubmitButton ({ isDisabled = false }: { isDisabled?: boolean }) 
     <Button
       type='submit'
       className='group px-8 py-5 bg-black dark:bg-white hover:bg-sky-500 dark:hover:bg-amber-200 text-white dark:text-black text-lg font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.01] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sky-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-gray-300 hover:cursor-pointer'
-      disabled={isDisabled}
+      disabled={isDisabled || formStatus.pending}
     >
       <div className='flex items-center justify-center gap-3'>
         {formStatus.pending ? (
