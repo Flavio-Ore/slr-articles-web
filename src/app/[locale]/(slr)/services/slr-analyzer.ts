@@ -1,4 +1,4 @@
-import { uploadPdfToGemini } from '#/app/(slr)/services/upload-pdf-to-gemini'
+import { uploadPdfToGemini } from '#/app/[locale]/(slr)/services/upload-pdf-to-gemini'
 import { ai } from '#/config/ai'
 import type { SlrAnalysis } from '#/schemas/slr-analysis-response.schema'
 import { createPartFromUri, type Part } from '@google/genai'

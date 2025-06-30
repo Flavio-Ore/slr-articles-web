@@ -1,6 +1,7 @@
 'use client'
 
 import type { SlrAnalysis } from '#/schemas/slr-analysis-response.schema'
+import { useTranslations } from 'next-intl'
 import SlrWordChart from './slr-word-chart'
 
 export default function SlrResults ({
@@ -8,10 +9,12 @@ export default function SlrResults ({
 }: {
   slrAnalysis: SlrAnalysis[]
 }) {
+  const t = useTranslations('results')
+
   return (
     <div className='space-y-6'>
       <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100'>
-        Analysis Results
+        {t('title')}
       </h2>
       <div className='grid gap-6'>
         {slrAnalysis.map((article, index) => (
@@ -33,7 +36,7 @@ export default function SlrResults ({
                 {article.publicationType && (
                   <div>
                     <span className='font-medium text-gray-700 dark:text-sky-100'>
-                      Publication Type:
+                      {t('publicationType')}:
                     </span>
                     <span className='ml-2 text-gray-600 dark:text-gray-400'>
                       {article.publicationType}
@@ -42,7 +45,7 @@ export default function SlrResults ({
                 )}
                 <div>
                   <span className='font-medium text-gray-700 dark:text-sky-100'>
-                    Year:
+                    {t('year')}:
                   </span>
                   <span className='ml-2 text-gray-600 dark:text-gray-400'>
                     {article.year}
@@ -51,7 +54,7 @@ export default function SlrResults ({
                 {article.source && (
                   <div>
                     <span className='font-medium text-gray-700 dark:text-sky-100'>
-                      Source:
+                      {t('source')}:
                     </span>
                     <span className='ml-2 text-gray-600 dark:text-gray-400'>
                       {article.source}
@@ -61,7 +64,7 @@ export default function SlrResults ({
                 {article.issn && (
                   <div>
                     <span className='font-medium text-gray-700 dark:text-sky-100'>
-                      ISSN:
+                      {t('issn')}:
                     </span>
                     <span className='ml-2 text-gray-600 dark:text-gray-400'>
                       {article.issn}
@@ -71,7 +74,7 @@ export default function SlrResults ({
                 {article.numberOfCitations != null && (
                   <div>
                     <span className='font-medium text-gray-700 dark:text-sky-100'>
-                      Number of Citations:
+                      {t('numberOfCitations')}:
                     </span>
                     <span className='ml-2 text-gray-600 dark:text-gray-400'>
                       {article.numberOfCitations}
@@ -81,7 +84,7 @@ export default function SlrResults ({
                 {article.countries && article.countries.length > 0 && (
                   <div>
                     <span className='font-medium text-gray-700 dark:text-sky-100'>
-                      Countries:
+                      {t('countries')}:
                     </span>
                     <span className='ml-2 text-gray-600 dark:text-gray-400'>
                       {article.countries.join(', ')}
@@ -93,7 +96,7 @@ export default function SlrResults ({
               {article.authors && article.authors.length > 0 && (
                 <div className='flex flex-col'>
                   <span className='font-medium text-gray-700 dark:text-sky-100'>
-                    Authors:
+                    {t('authors')}:
                   </span>
                   <ul className='ml-4 text-gray-600 list-decimal dark:text-gray-400'>
                     {article.authors.map((author, authorIndex) => (
@@ -107,7 +110,7 @@ export default function SlrResults ({
                         </span>
                         {author.hIndex != null && (
                           <span className='text-gray-500 dark:text-gray-400'>
-                            (h-index: {author.hIndex})
+                            {t('hIndex')}: {author.hIndex}
                           </span>
                         )}
                       </li>
@@ -119,7 +122,7 @@ export default function SlrResults ({
               {article.keywords && article.keywords.length > 0 && (
                 <div>
                   <span className='font-medium text-gray-700 dark:text-sky-100'>
-                    Keywords:
+                    {t('keywords')}:
                   </span>
                   <div className='mt-2 flex flex-wrap gap-2'>
                     {article.keywords.map((keyword, keywordIndex) => (
@@ -136,7 +139,7 @@ export default function SlrResults ({
 
               <div>
                 <span className='font-medium text-gray-700 dark:text-sky-100'>
-                  Abstract:
+                  {t('abstract')}:
                 </span>
                 <p className='mt-1 text-gray-600 dark:text-gray-400 text-sm leading-relaxed'>
                   {article.resume}
@@ -145,7 +148,7 @@ export default function SlrResults ({
 
               <div>
                 <span className='font-medium text-gray-700 dark:text-sky-100'>
-                  Conclusion:
+                  {t('conclusion')}:
                 </span>
                 <p className='mt-1 text-gray-600 dark:text-gray-400 text-sm leading-relaxed'>
                   {article.conclusion}
