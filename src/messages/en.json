@@ -1,0 +1,67 @@
+{
+  "page": {
+    "title": "Systematic Literature Review",
+    "subtitle": "Articles, Search and Analysis",
+    "poweredBy": "Powered by",
+    "geminiAI": "Gemini AI",
+    "nextjs": "Next.js"
+  },
+  "form": {
+    "pdfUrlPlaceholder": "https://example.com/document.pdf",
+    "pdfUrlLabel": "PDF URL",
+    "selectLocalPdfFiles": "Select local PDF files",
+    "addButton": "Add",
+    "startAnalysis": "Start Analysis",
+    "analyzingPdfs": "Analyzing PDFs...",
+    "selectedDocuments": "Selected Documents",
+    "document": "document",
+    "documents": "documents",
+    "localPdf": "Local PDF",
+    "externalPdf": "External PDF",
+    "validPdfUrl": "Valid PDF URL",
+    "messages": {
+      "repeatedPdf": "This PDF has already been added.",
+      "invalidPdfUrl": "Please enter a valid PDF URL.",
+      "noFilesSelected": "No files selected. Please select PDF files.",
+      "invalidFileType": "File {fileName} is not a valid PDF. Please select only PDF files.",
+      "analysisReady": "The SLR analysis is ready to be started. 🔍",
+      "analysisSuccess": "SLR analysis run successfully.",
+      "analysisError": "There was an error starting the SLR analysis. Please try again later."
+    }
+  },
+  "results": {
+    "title": "Analysis Results",
+    "pdfNumber": "PDF #{number}",
+    "publicationType": "Publication Type:",
+    "year": "Year:",
+    "source": "Source:",
+    "issn": "ISSN:",
+    "numberOfCitations": "Number of Citations:",
+    "countries": "Countries:",
+    "authors": "Authors:",
+    "hIndex": "h-index:",
+    "keywords": "Keywords:",
+    "abstract": "Abstract:",
+    "conclusion": "Conclusion:"
+  },
+  "chart": {
+    "title": "Research Analysis Dashboard",
+    "subtitle": "Most frequent words and key terms from research articles",
+    "wordFrequencyAnalysis": "Word Frequency Analysis",
+    "wordCount": "Word Count",
+    "citationsAnalysis": "Citations Over Years"
+  },
+  "theme": {
+    "toggleTheme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "footer": {
+    "allRightsReserved": "All rights reserved.",
+    "copyright": "© {year} SLR Articles. All rights reserved."
+  },
+  "dialog": {
+    "close": "Close"
+  }
+}

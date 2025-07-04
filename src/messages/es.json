@@ -1,0 +1,69 @@
+{
+  "page": {
+    "title": "Revisión Sistemática de la Literatura",
+    "subtitle": "Artículos, Búsqueda y Análisis",
+    "poweredBy": "Impulsado por",
+    "geminiAI": "Gemini AI",
+    "nextjs": "Next.js"
+  },
+  "form": {
+    "pdfUrlPlaceholder": "https://ejemplo.com/documento.pdf",
+    "pdfUrlLabel": "URL del PDF",
+    "selectLocalPdfFiles": "Seleccionar archivos PDF locales",
+    "addButton": "Agregar",
+    "startAnalysis": "Iniciar Análisis",
+    "analyzingPdfs": "Analizando PDFs...",
+    "selectedDocuments": "Documentos Seleccionados",
+    "document": "documento",
+    "documents": "documentos",
+    "localPdf": "PDF Local",
+    "externalPdf": "PDF Externo",
+    "validPdfUrl": "URL de PDF válida",
+    "messages": {
+      "repeatedPdf": "Este PDF ya ha sido agregado.",
+      "invalidPdfUrl": "Por favor, ingrese una URL de PDF válida.",
+      "noFilesSelected": "No se seleccionaron archivos. Por favor, seleccione archivos PDF.",
+      "invalidFileType": "El archivo {fileName} no es un PDF válido. Por favor, seleccione solo archivos PDF.",
+      "analysisReady": "El análisis SLR está listo para comenzar. 🔍",
+      "analysisSuccess": "Análisis SLR ejecutado exitosamente.",
+      "analysisError": "Hubo un error al iniciar el análisis SLR. Por favor, inténtelo de nuevo más tarde."
+    }
+  },
+  "results": {
+    "title": "Resultados del Análisis",
+    "pdfNumber": "PDF #{number}",
+    "publicationType": "Tipo de Publicación:",
+    "year": "Año:",
+    "source": "Fuente:",
+    "issn": "ISSN:",
+    "numberOfCitations": "Número de Citas:",
+    "countries": "Países:",
+    "authors": "Autores:",
+    "hIndex": "índice-h:",
+    "keywords": "Palabras Clave:",
+    "abstract": "Resumen:",
+    "conclusion": "Conclusión:"
+  },
+  "chart": {
+    "title": "Panel de Análisis de Investigación",
+    "subtitle": "Palabras más frecuentes y términos clave de artículos de investigación",
+    "wordFrequencyAnalysis": "Análisis de Frecuencia de Palabras",
+    "words": "Palabras",
+    "frequencyCount": "Conteo de Frecuencia",
+    "wordCount": "Conteo de Palabras",
+    "citationsAnalysis": "Número de Citas por Año"
+  },
+  "theme": {
+    "toggleTheme": "Cambiar tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "footer": {
+    "allRightsReserved": "Todos los derechos reservados.",
+    "copyright": "© {year} SLR Articles. Todos los derechos reservados."
+  },
+  "dialog": {
+    "close": "Cerrar"
+  }
+}

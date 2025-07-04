@@ -4,13 +4,13 @@ import type { SlrAnalysis } from '#/schemas/slr-analysis-response.schema'
 import { revalidatePath } from 'next/cache'
 import { slrAnalyzer } from './services/slr-analyzer'
 
-interface SrlAnalysisResponse {
+interface SlrAnalysisResult {
   slrAnalysis: SlrAnalysis[]
   success: boolean
   message: string
 }
 
-export async function srlAnalysis (
+export async function slrAnalysis (
   prevState: {
     success: boolean
     slrAnalysis: SlrAnalysis[]
@@ -49,16 +49,12 @@ export async function srlAnalysis (
       pdfs: pdfsToAnalyze
     })
 
-    // console.log({
-    //   slrAnalysis
-    // })
-
     revalidatePath('/')
     return {
       slrAnalysis,
       success: true,
       message: 'SLR analysis run successfully.'
-    } as SrlAnalysisResponse
+    } as SlrAnalysisResult
   } catch (error) {
     console.trace('Error during SLR analysis:', error)
     return {
@@ -66,6 +62,6 @@ export async function srlAnalysis (
       success: false,
       message:
         'There was an error starting the SLR analysis. Please try again later.'
-    } as SrlAnalysisResponse
+    } as SlrAnalysisResult
   }
 }

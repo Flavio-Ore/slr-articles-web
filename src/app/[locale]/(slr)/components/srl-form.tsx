@@ -1,6 +1,6 @@
 'use client'
 
-import { srlAnalysis } from '#/app/(slr)/actions'
+import { slrAnalysis } from '#/app/[locale]/(slr)/actions'
 import { cn } from '#/lib/utils'
 import { checkIsValidPdfUrl } from '#/utils/check-is-valid-pdf-url'
 import { Button } from '#shadcn/button'
@@ -13,14 +13,16 @@ import {
   TrashIcon,
   XIcon
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useActionState, useEffect, useMemo, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { toast } from 'sonner'
 import SlrResults from './slr-results'
 
 export default function SlrForm () {
+  const t = useTranslations('form')
   const [slrAnalysisState, slrAnalysisFormAction] = useActionState(
-    srlAnalysis,
+    slrAnalysis,
     {
       message: 'The SLR analysis is ready to be started. 🔍',
       slrAnalysis: [],
@@ -128,7 +130,7 @@ export default function SlrForm () {
               className='px-2 py-6 border border-blue-500/50 dark:border-sky-500/50 rounded-md focus:ring-1 focus:ring-sky-500 dark:focus:ring-blue-400 w-full'
               value={inputValue}
               onChange={e => setInputValue(e.target.value)}
-              placeholder='https://example.com/document.pdf'
+              placeholder={t('pdfUrlPlaceholder')}
               pattern='https?://.+\.pdf'
             />
             <Button
@@ -178,7 +180,7 @@ export default function SlrForm () {
             onChange={e => {
               const files = e.target.files
               if (!files) {
-                toast.error('No files selected. Please select PDF files.', {
+                toast.error(t('messages.noFilesSelected'), {
                   position: 'top-center',
                   richColors: true
                 })
@@ -206,27 +208,27 @@ export default function SlrForm () {
 
           {isRepeatedPdfUrl && inputValue !== '' && (
             <span className='text-red-500 dark:text-red-400 mt-2'>
-              This PDF has already been added.
+              {t('messages.repeatedPdf')}
             </span>
           )}
           {!isValidPdfUrl && !isRepeatedPdfUrl && inputValue !== '' && (
             <span className='text-red-500 dark:text-red-400 mt-2'>
-              Please enter a valid PDF URL.
+              {t('messages.invalidPdfUrl')}
             </span>
           )}
           {isValidPdfUrl && inputValue !== '' && (
-            <span className='text-green-600 text-sm'>Valid PDF URL</span>
+            <span className='text-green-600 text-sm'>{t('validPdfUrl')}</span>
           )}
         </div>
         {pdfs.size > 0 && (
           <div className='flex flex-col gap-y-2'>
             <div className='flex items-center justify-between mb-2'>
-              <h3 className='text-xl font-semibold bg-gradient-to-r from-sky-50 to-sky-200 bg-clip-text text-transparent'>
-                Selected Documents
+              <h3 className='text-xl font-semibold bg-gradient-to-r from-sky-400 dark:from-sky-100 to-sky-700 dark:to-sky-300 bg-clip-text text-transparent'>
+                {t('selectedDocuments')}
               </h3>
               <div className='flex items-center gap-2 px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full'>
                 <span className='text-sm font-medium text-slate-600 dark:text-slate-300'>
-                  {pdfs.size} {pdfs.size === 1 ? 'document' : 'documents'}
+                  {pdfs.size} {pdfs.size === 1 ? t('document') : t('documents')}
                 </span>
               </div>
             </div>
@@ -301,7 +303,7 @@ export default function SlrForm () {
                         }
                       )}
                     >
-                      {pdf instanceof File ? 'Local PDF' : 'External PDF'} #
+                      {pdf instanceof File ? t('localPdf') : t('externalPdf')} #
                       {index + 1}
                     </p>
                   </div>
@@ -328,6 +330,7 @@ export default function SlrForm () {
         )}
         <SubmitButton isDisabled={pdfs.size === 0} />
       </form>
+      <hr className='border-t border-slate-200 dark:border-slate-700 my-8' />
       {slrAnalysisState.success && slrAnalysisState.slrAnalysis.length > 0 && (
         <>
           <hr className='border-t border-slate-200 dark:border-slate-700 my-8' />
@@ -340,6 +343,7 @@ export default function SlrForm () {
 
 export function SubmitButton ({ isDisabled = false }: { isDisabled?: boolean }) {
   const formStatus = useFormStatus()
+  const t = useTranslations('form')
 
   return (
     <Button
@@ -351,11 +355,11 @@ export function SubmitButton ({ isDisabled = false }: { isDisabled?: boolean }) 
         {formStatus.pending ? (
           <>
             <LoaderCircleIcon className='animate-spin' size={20} />
-            <span>Analyzing PDFs...</span>
+            <span>{t('analyzingPdfs')}</span>
           </>
         ) : (
           <span className='relative before:content-["🔍"] before:absolute before:-left-8 before:top-1/2 before:-translate-y-1/2 before:text-xl before:animate-pulse before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-200 after:content-["🚀"] after:absolute after:-right-8 after:top-1/2 after:-translate-y-1/2 after:text-xl after:animate-pulse after:opacity-0 group-hover:after:opacity-100 after:transition-opacity after:duration-200'>
-            Start Analysis
+            {t('startAnalysis')}
           </span>
         )}
       </div>
