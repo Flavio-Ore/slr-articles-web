@@ -51,9 +51,7 @@
     "words": "Palabras",
     "frequencyCount": "Conteo de Frecuencia",
     "wordCount": "Conteo de Palabras",
-    "titleKeywords": "Palabras Clave del Título",
-    "abstractTerms": "Términos del Resumen",
-    "technicalTerms": "Términos Técnicos"
+    "citationsAnalysis": "Número de Citas por Año"
   },
   "theme": {
     "toggleTheme": "Cambiar tema",

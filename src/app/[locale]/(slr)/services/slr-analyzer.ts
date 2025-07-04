@@ -12,19 +12,21 @@ const promptParts: (string | Part)[] = [
       - countries: An array of countries of the authors' affiliations.
       - issn: The ISSN of the journal.
       - publicationType: The type of publication (e.g., 'Scientific Article', 'Review Paper').
-      - numberOfCitations: The total number of citations the paper has received.
+      - citations: Array of references grouped by year with their counts [{"year": 2024, "count": 45}, {"year": 2023, "count": 38}].
       - authors: An array of objects, each with the author's 'name', 'affiliation', and 'hIndex' (if available, otherwise null).
       - quartiles: The journal's quartile (e.g., 'Q1', 'Q2').
       - resume: A brief summary or abstract of the paper.
       - keywords: A list of keywords.
       - conclusion: The main conclusion of the paper.
   
-      **For Word Frequency and Text Analysis:**
+      **For Word Frequency**
       - mostFrequentWords: Array of the 10 most frequent meaningful words (excluding stop words) with their counts [{"word": "machine", "count": 45}, {"word": "learning", "count": 38}].
-      - titleWords: Array of words from the title for title word cloud analysis.
-      - abstractWords: Array of the 10 most frequent words from the abstract.
-      - technicalTerms: Array of the 10 most frequent technical terms, acronyms, and specialized vocabulary found in the paper.
-      - citedAuthors: Array of the most cited authors mentioned in references (top 10).
+
+      **For Citations/References**
+      - Analyze the REFERENCES section at the end of the paper
+      - Group all references by their publication year
+      - Count how many references exist for each year
+      - Return this as an array of objects with year and count
 
       The output must be a single JSON array of objects. Each object should represent one paper. Do not include any other text or explanations outside of the JSON array. If a value is not found, use null.
 
@@ -38,7 +40,24 @@ const promptParts: (string | Part)[] = [
           "countries": ["USA", "UK"],
           "issn": "1234-5678",
           "publicationType": "Scientific Article",
-          "numberOfCitations": 150,
+          "citations": [
+            {
+              "year": 2023,
+              "count": 23,
+            },
+            {
+              "year": 2022,
+              "count": 15,
+            },
+            {
+              "year": 2021,
+              "count": 8,
+            },
+            {
+              "year": 2020,
+              "count": 5,
+            }
+          ],
           "authors": [
             { "name": "Jane Doe", "affiliation": "AI University", "hIndex": 42 },
             { "name": "John Smith", "affiliation": "Tech Corp", "hIndex": 35 }
@@ -54,9 +73,6 @@ const promptParts: (string | Part)[] = [
             {"word": "diagnosis", "count": 45},
             {"word": "treatment", "count": 40}
           ],
-          "titleWords": ["Machine", "Learning", "Healthcare", "Comprehensive", "Review"],
-          "abstractWords": ["machine", "learning", "healthcare", "diagnosis", "treatment", "accuracy"],
-          "technicalTerms": ["CNN", "RNN", "SVM", "Random Forest", "Deep Learning"],
         }
       ]
       `

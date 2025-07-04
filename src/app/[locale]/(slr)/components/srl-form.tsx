@@ -223,7 +223,7 @@ export default function SlrForm () {
         {pdfs.size > 0 && (
           <div className='flex flex-col gap-y-2'>
             <div className='flex items-center justify-between mb-2'>
-              <h3 className='text-xl font-semibold bg-gradient-to-r from-sky-50 to-sky-200 bg-clip-text text-transparent'>
+              <h3 className='text-xl font-semibold bg-gradient-to-r from-sky-400 dark:from-sky-100 to-sky-700 dark:to-sky-300 bg-clip-text text-transparent'>
                 {t('selectedDocuments')}
               </h3>
               <div className='flex items-center gap-2 px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full'>
@@ -330,6 +330,7 @@ export default function SlrForm () {
         )}
         <SubmitButton isDisabled={pdfs.size === 0} />
       </form>
+      <hr className='border-t border-slate-200 dark:border-slate-700 my-8' />
       {slrAnalysisState.success && slrAnalysisState.slrAnalysis.length > 0 && (
         <>
           <hr className='border-t border-slate-200 dark:border-slate-700 my-8' />
