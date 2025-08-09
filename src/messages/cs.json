@@ -1,0 +1,69 @@
+{
+  "page": {
+    "title": "Systematický přehled literatury",
+    "subtitle": "Články, vyhledávání a analýza",
+    "poweredBy": "Poháněno",
+    "geminiAI": "Gemini AI",
+    "nextjs": "Next.js"
+  },
+  "form": {
+    "pdfUrlPlaceholder": "https://priklad.cz/dokument.pdf",
+    "pdfUrlLabel": "Adresa URL PDF",
+    "selectLocalPdfFiles": "Vybrat místní soubory PDF",
+    "addButton": "Přidat",
+    "startAnalysis": "Spustit analýzu",
+    "analyzingPdfs": "Probíhá analýza PDF...",
+    "selectedDocuments": "Vybrané dokumenty",
+    "document": "dokument",
+    "documents": "dokumenty",
+    "localPdf": "Místní PDF",
+    "externalPdf": "Externí PDF",
+    "validPdfUrl": "Platná adresa URL PDF",
+    "messages": {
+      "repeatedPdf": "Toto PDF již bylo přidáno.",
+      "invalidPdfUrl": "Zadejte platnou adresu URL PDF.",
+      "noFilesSelected": "Nebyly vybrány žádné soubory. Vyberte prosím soubory PDF.",
+      "invalidFileType": "Soubor {fileName} není platné PDF. Vyberte prosím pouze soubory PDF.",
+      "analysisReady": "Analýza SLR je připravena ke spuštění. 🔍",
+      "analysisSuccess": "Analýza SLR úspěšně provedena.",
+      "analysisError": "Při spuštění analýzy SLR došlo k chybě. Zkuste to prosím později."
+    }
+  },
+  "results": {
+    "title": "Výsledky analýzy",
+    "pdfNumber": "PDF #{number}",
+    "publicationType": "Typ publikace:",
+    "year": "Rok:",
+    "source": "Zdroj:",
+    "issn": "ISSN:",
+    "numberOfCitations": "Počet citací:",
+    "countries": "Země:",
+    "authors": "Autoři:",
+    "hIndex": "h-index:",
+    "keywords": "Klíčová slova:",
+    "abstract": "Abstrakt:",
+    "conclusion": "Závěr:"
+  },
+  "chart": {
+    "title": "Panel analýzy výzkumu",
+    "subtitle": "Nejčastější slova a klíčové pojmy z vědeckých článků",
+    "wordFrequencyAnalysis": "Analýza frekvence slov",
+    "words": "Slova",
+    "frequencyCount": "Počet výskytů",
+    "wordCount": "Počet slov",
+    "citationsAnalysis": "Počet citací podle let"
+  },
+  "theme": {
+    "toggleTheme": "Přepnout motiv",
+    "light": "Světlý",
+    "dark": "Tmavý",
+    "system": "Systém"
+  },
+  "footer": {
+    "allRightsReserved": "Všechna práva vyhrazena.",
+    "copyright": "© {year} SLR Articles. Všechna práva vyhrazena."
+  },
+  "dialog": {
+    "close": "Zavřít"
+  }
+}
