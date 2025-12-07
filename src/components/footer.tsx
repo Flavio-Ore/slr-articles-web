@@ -5,9 +5,9 @@ import Link from 'next/link'
 export default function Footer () {
   const t = useTranslations('footer')
   return (
-    <footer className='w-full bg-slate-900 text-slate-300'>
+    <footer className='w-full bg-sky-200 dark:bg-gray-800  text-slate-300'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12'>
-        <div className='border-t border-slate-700 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center'>
+        <div className='border-t border-gray-950 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center'>
           <div className='text-sm'>
             {t('copyright', {
               year: new Date().getFullYear()
@@ -25,7 +25,7 @@ export default function Footer () {
             <Link
               rel='noopener noreferrer'
               target='_blank'
-              href='https://www.linkedin.com/in/flavio-gon-ch'
+              href='https://www.linkedin.com/in/flavio-ore'
               className='hover:text-blue-400 transition-colors'
             >
               <Linkedin className='h-5 w-5' />
