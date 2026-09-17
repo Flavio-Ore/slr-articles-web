@@ -48,12 +48,8 @@
     "title": "Research Analysis Dashboard",
     "subtitle": "Most frequent words and key terms from research articles",
     "wordFrequencyAnalysis": "Word Frequency Analysis",
-    "words": "Words",
-    "frequencyCount": "Frequency Count",
     "wordCount": "Word Count",
-    "titleKeywords": "Title Keywords",
-    "abstractTerms": "Abstract Terms",
-    "technicalTerms": "Technical Terms"
+    "citationsAnalysis": "Citations Over Years"
   },
   "theme": {
     "toggleTheme": "Toggle theme",
