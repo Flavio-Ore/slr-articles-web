@@ -21,7 +21,6 @@ export default function SlrForm () {
   const [slrAnalysisState, slrAnalysisFormAction] = useActionState(
     srlAnalysis,
     {
-      pdfUrls: new Set<string>(),
       message: 'useFormState initial state',
       slrAnalysis: [],
       success: false
@@ -32,9 +31,7 @@ export default function SlrForm () {
   })
   const [inputValue, setInputValue] = useState<string>('')
   const debouncedValue = useDebounce(inputValue)
-  const [pdfUrls, setPdfUrls] = useState(
-    new Set<string>(slrAnalysisState.pdfUrls)
-  )
+  const [pdfUrls, setPdfUrls] = useState(new Set<string>(new Set<string>()))
   const [isError, setIsError] = useState<boolean>(false)
 
   const isRepeatedPdfUrl = useMemo(
@@ -69,7 +66,7 @@ export default function SlrForm () {
   }, [slrAnalysisState])
 
   return (
-    <form action={slrAnalysisFormAction} className='flex flex-col gap-y-1'>
+    <form action={slrAnalysisFormAction} className='flex flex-col gap-y-6'>
       {pdfUrls.size > 0 &&
         Array.from(pdfUrls).map(url => (
           <input
@@ -81,7 +78,7 @@ export default function SlrForm () {
             pattern='https?://.+\.pdf'
           />
         ))}
-      <div className='flex flex-col mb-4 gap-y-2'>
+      <div className='flex flex-col gap-y-2'>
         {isRepeatedPdfUrl && debouncedValue !== '' && (
           <span className='text-red-500 dark:text-red-400 mt-2'>
             This PDF has already been added.
@@ -211,7 +208,7 @@ export function SubmitButton ({ isDisabled = false }: { isDisabled?: boolean }) 
   return (
     <Button
       type='submit'
-      className='mt-6 px-8 py-5 bg-blue-600 dark:bg-blue-300 hover:bg-blue-700 text-white dark:text-black text-lg font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.01] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-blue-600 hover:cursor-pointer'
+      className='px-8 py-5 bg-blue-600 dark:bg-blue-300 hover:bg-blue-700 text-white dark:text-black text-lg font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.01] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-blue-600 hover:cursor-pointer'
       disabled={isDisabled}
     >
       <div className='flex items-center justify-center gap-3'>

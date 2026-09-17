@@ -67,5 +67,10 @@ export async function slrAnalyzer({ pdfUrls = [] }: { pdfUrls: string[] }): Prom
     responseText: response?.text,
   })
 
-  return JSON.parse(response?.text ?? '') || [];
+  try {
+    return JSON.parse(response?.text ?? '');
+  } catch (error) {
+    console.error("Error parsing JSON response:", error);
+    return [];
+  }
 }
