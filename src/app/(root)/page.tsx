@@ -28,14 +28,13 @@ export default async function RootHome () {
             <NextjsIcon className='h-5 w-5' />
             <span className='font-medium'>Next.js</span>
           </div>
-          <div className='absolute top-4 right-4'>
+          <div className='absolute bottom-1/2 top-1/2 right-2'>
             <ModeToggle />
           </div>
         </header>
 
         <SlrForm />
       </main>
-
       <Footer />
     </div>
   )
