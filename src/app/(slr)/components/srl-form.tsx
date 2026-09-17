@@ -1,6 +1,6 @@
 'use client'
 
-import { srlAnalysis } from '#/app/(root)/actions'
+import { srlAnalysis } from '#/app/(slr)/actions'
 import PdfViewer from '#/components/pdf-viewer'
 import { useDebounce } from '#/hooks/use-debounce'
 import { cn } from '#/lib/utils'
@@ -78,6 +78,7 @@ export default function SlrForm () {
             name='pdfUrls'
             className='hidden'
             value={url}
+            pattern='https?://.+\.pdf'
           />
         ))}
       <div className='flex flex-col mb-4 gap-y-2'>

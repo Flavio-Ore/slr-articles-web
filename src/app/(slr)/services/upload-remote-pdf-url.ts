@@ -1,10 +1,12 @@
-import type { GetFileParameters, GoogleGenAI } from "@google/genai";
+import { ai } from "#/config/ai";
+import { pdfUrlToBlob } from "#/utils/pdf-url-to-blob";
+import type { GetFileParameters } from "@google/genai";
 
-export async function uploadRemotePDF({ ai, displayName, url }: { ai: GoogleGenAI, url: string | URL | Request, displayName: string }) {
-  const pdfBuffer = await fetch(url)
-    .then((response) => response.arrayBuffer());
-  const fileBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
-
+export async function uploadRemotePdfUrl(url: string, displayName: string) {
+  if (url.trim() === '') {
+    return null
+  }
+  const fileBlob = await pdfUrlToBlob({ url })
   const file = await ai.files.upload({
     file: fileBlob,
     config: {
@@ -32,4 +34,4 @@ export async function uploadRemotePDF({ ai, displayName, url }: { ai: GoogleGenA
   }
 
   return file;
-}
+} 

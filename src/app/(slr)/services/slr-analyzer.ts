@@ -1,9 +1,9 @@
+import { uploadRemotePdfUrl } from "#/app/(slr)/services/upload-remote-pdf-url";
 import { ai } from "#/config/ai";
-import { pdfUrlToBlob } from "#/utils/pdf-url-to-blob";
+import type { SlrAnalysis } from "#/schemas/slr-analysis-response.schema";
 import { createPartFromUri, type Part } from "@google/genai";
-import { NextRequest, NextResponse } from 'next/server';
 
-const content: (string | Part)[] = [
+const PROMPT: (string | Part)[] = [
   `Analyze the following scientific papers. For each paper, extract the following information:
       - fileName: The display name of the file.
       - title: The full title of the paper.
@@ -42,44 +42,30 @@ const content: (string | Part)[] = [
       ]
       `,
 ];
-export async function POST(req: NextRequest) {
-  try {
-    const { pdfUrls } = await req.json()
-    console.log({
-      pdfUrls
-    })
 
-    if (!pdfUrls || !Array.isArray(pdfUrls) || pdfUrls.length === 0) {
-      return NextResponse.json({ error: 'At least one PDF URL is required' }, { status: 400 })
+export async function slrAnalyzer({ pdfUrls = [] }: { pdfUrls: string[] }): Promise<SlrAnalysis[]> {
+  for (const [index, url] of pdfUrls.entries()) {
+    const file = await uploadRemotePdfUrl(url, `PDF ${index + 1}`);
+    if (file != null && file.uri && file.mimeType) {
+      const fileContent = createPartFromUri(file.uri, file.mimeType);
+      console.log({
+        fileContent
+      })
+      PROMPT.push(fileContent);
     }
-    if (!prompt) {
-      return NextResponse.json({ error: 'Prompt is required' }, { status: 400 })
-    }
-
-    for (const [index, url] of pdfUrls.entries()) {
-      const file = await pdfUrlToBlob({
-        ai,
-        url,
-        displayName: `paper-${index + 1}.pdf`,
-      });
-      if (file.uri && file.mimeType) {
-        const fileContent = createPartFromUri(file.uri, file.mimeType);
-        content.push(fileContent);
-      }
-    }
-
-    // const response = await ai.models.generateContent({
-    //   model: "gemini-2.5-flash",
-    //   contents: content,
-    // });
-
-    // console.log({
-    //   response_text: response.text
-    // });
-
-    return NextResponse.json({ text: 'Get API' }, { status: 200 })
-  } catch (error) {
-    console.error('Error in Gemini API route:', error)
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
+
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: PROMPT,
+    config: {
+      responseMimeType: 'application/json',
+    }
+  });
+
+  console.log({
+    responseText: response?.text,
+  })
+
+  return JSON.parse(response?.text ?? '') || [];
 }
