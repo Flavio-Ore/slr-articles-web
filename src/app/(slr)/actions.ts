@@ -49,10 +49,6 @@ export async function srlAnalysis (
       pdfs: pdfsToAnalyze
     })
 
-    // console.log({
-    //   slrAnalysis
-    // })
-
     revalidatePath('/')
     return {
       slrAnalysis,
