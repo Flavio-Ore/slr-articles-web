@@ -10,10 +10,16 @@ export default function Footer () {
             © {new Date().getFullYear()} SLR Articles. All rights reserved.
           </div>
           <div className='flex space-x-4 mt-4 sm:mt-0'>
-            <Link href='#' className='hover:text-blue-400 transition-colors'>
+            <Link
+              href='https://github.com/Flavio-Ore'
+              className='hover:text-blue-400 transition-colors'
+            >
               <Github className='h-5 w-5' />
             </Link>
-            <Link href='#' className='hover:text-blue-400 transition-colors'>
+            <Link
+              href='https://www.linkedin.com/in/flavio-gon-ch'
+              className='hover:text-blue-400 transition-colors'
+            >
               <Linkedin className='h-5 w-5' />
             </Link>
           </div>
