@@ -14,7 +14,7 @@ export default function PdfViewer ({ initialPdfUrl = '' }: PdfViewerProps) {
   return (
     <>
       {isValidPdfUrl && (
-        <div style={{ marginTop: '20px' }}>
+        <div className='mt'>
           <iframe
             src={`https://docs.google.com/gview?url=${initialPdfUrl}&embedded=true`}
             style={{ width: '100%', height: '50vh', border: 'none' }}
@@ -22,9 +22,6 @@ export default function PdfViewer ({ initialPdfUrl = '' }: PdfViewerProps) {
             aria-label='PDF Viewer'
           />
         </div>
-      )}
-      {!isValidPdfUrl && (
-        <p className='text-red-600 mt-2'>Please enter a valid PDF URL.</p>
       )}
     </>
   )
