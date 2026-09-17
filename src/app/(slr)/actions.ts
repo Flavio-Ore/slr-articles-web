@@ -35,6 +35,7 @@ export async function srlAnalysis(
 
     revalidatePath('/')
     return {
+      slrAnalysis,
       success: true,
       message: 'SLR analysis run successfully.',
     } as SrlAnalysisResponse

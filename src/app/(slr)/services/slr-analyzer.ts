@@ -23,13 +23,14 @@ const PROMPT: (string | Part)[] = [
       Here is an example of the desired output format:
       [
         {
-          "fileName": "article1.pdf",
           "title": "The Rise of Large Language Models: A Survey",
           "url": "https://example.com/article1",
           "source": "Journal of AI Research",
           "year": 2023,
           "countries": ["USA", "UK"],
           "issn": "1234-5678",
+          "publicationType": "Scientific Article",
+          "numberOfCitations": 150,
           "authors": [
             { "name": "Jane Doe", "affiliation": "AI University", "hIndex": 42 },
             { "name": "John Smith", "affiliation": "Tech Corp", "hIndex": 35 }
