@@ -1,22 +1,43 @@
 import { ai } from '#/config/ai'
+import { checkIsValidPdfUrl } from '#/utils/check-is-valid-pdf-url'
 import { pdfUrlToBlob } from '#/utils/pdf-url-to-blob'
 import type { GetFileParameters } from '@google/genai'
 
-export async function uploadRemotePdfUrl (url: string, displayName: string) {
-  if (url.trim() === '') {
-    return null
+export async function uploadPdfToGemini ({
+  pdf,
+  displayName
+}: {
+  pdf: string | File
+  displayName: string
+}) {
+  let fileBlob: Blob
+
+  if (typeof pdf === 'string') {
+    if (
+      !checkIsValidPdfUrl({
+        pdfUrl: pdf
+      })
+    ) {
+      return null
+    }
+    fileBlob = await pdfUrlToBlob({ url: pdf })
+  } else {
+    fileBlob = pdf
   }
-  const fileBlob = await pdfUrlToBlob({ url })
+  console.log({
+    fileBlob
+  })
   const file = await ai.files.upload({
     file: fileBlob,
     config: {
-      displayName: displayName
+      displayName
     }
   })
 
   const config: GetFileParameters = {
     name: file?.name ?? ''
   }
+
   console.log({
     config
   })

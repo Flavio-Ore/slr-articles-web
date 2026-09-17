@@ -3,7 +3,6 @@
 export async function pdfUrlToBlob ({ url }: { url: string | URL }) {
   if (typeof url === 'string') {
     url = new URL(url)
-    console.log({ url: new URL(url) })
   }
   if (!(url instanceof URL)) {
     throw new Error('Invalid URL provided')
@@ -30,7 +29,6 @@ export async function pdfUrlToBlob ({ url }: { url: string | URL }) {
     url.hash = ''
   }
 
-  console.log({ url })
   const pdfBuffer = await fetch(url).then(response => response.arrayBuffer())
   if (!pdfBuffer || pdfBuffer.byteLength === 0) {
     throw new Error(

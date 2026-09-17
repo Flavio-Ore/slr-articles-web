@@ -27,23 +27,24 @@ export default function SlrForm () {
       success: false
     }
   )
-  const [inputValue, setInputValue] = useState<string>('')
-  const [pdfUrls, setPdfUrls] = useState(new Set<string>(new Set<string>()))
-  const [isError, setIsError] = useState<boolean>(false)
+  const [inputValue, setInputValue] = useState('')
+  const [pdfs, setPdfs] = useState(new Set<string | File>())
+  const [isError, setIsError] = useState(false)
 
   console.log({
-    slrAnalysisState
+    slrAnalysisState,
+    pdfs
   })
 
   const isRepeatedPdfUrl = useMemo(
-    () => pdfUrls.has(inputValue),
-    [inputValue, pdfUrls]
+    () => pdfs.has(inputValue),
+    [inputValue, pdfs]
   )
   const isValidPdfUrl = useMemo(
     () =>
       checkIsValidPdfUrl({ pdfUrl: inputValue }) &&
-      pdfUrls.has(inputValue) === false,
-    [inputValue, pdfUrls]
+      pdfs.has(inputValue) === false,
+    [inputValue, pdfs]
   )
 
   useEffect(() => {
@@ -75,17 +76,49 @@ export default function SlrForm () {
   return (
     <div className='flex flex-col'>
       <form action={slrAnalysisFormAction} className='flex flex-col gap-y-6'>
-        {pdfUrls.size > 0 &&
-          Array.from(pdfUrls).map(url => (
-            <input
-              key={url}
-              type='hidden'
-              name='pdfUrls'
-              className='hidden'
-              value={url}
-              pattern='https?://.+\.pdf'
-            />
+        {Array.from(pdfs)
+          .filter((pdf): pdf is string => typeof pdf === 'string')
+          .filter(
+            pdfUrl => pdfUrl.startsWith('http') || pdfUrl.startsWith('https')
+          )
+          .map((pdfUrl, index) => (
+            <div key={`url-${pdfUrl}-${index}`}>
+              <input type='hidden' name='pdfUrls' value={pdfUrl} />
+              <input
+                type='hidden'
+                name='pdfUrls-order'
+                value={index.toString()}
+              />
+            </div>
           ))}
+
+        {Array.from(pdfs)
+          .filter((pdf): pdf is File => pdf instanceof File)
+          .map((file, fileIndex) => {
+            const globalIndex = Array.from(pdfs).indexOf(file)
+            return (
+              <div key={`file-${file.name}-${fileIndex}`}>
+                <input
+                  type='file'
+                  name='localPdfFiles'
+                  style={{ display: 'none' }}
+                  ref={el => {
+                    if (!el) {
+                      return
+                    }
+                    const dt = new DataTransfer()
+                    dt.items.add(file)
+                    el.files = dt.files
+                  }}
+                />
+                <input
+                  type='hidden'
+                  name='localPdfs-order'
+                  value={globalIndex.toString()}
+                />
+              </div>
+            )
+          })}
         <div className='flex flex-col gap-y-2'>
           <div className='flex flex-row gap-x-2 items-center'>
             <Input
@@ -122,7 +155,7 @@ export default function SlrForm () {
                   !isError &&
                   inputValue
                 ) {
-                  setPdfUrls(prevUrls => new Set([...prevUrls, inputValue]))
+                  setPdfs(prevPdfs => new Set([...prevPdfs, inputValue]))
                   setInputValue('')
                 }
               }}
@@ -152,10 +185,9 @@ export default function SlrForm () {
                 return
               }
 
-              const newUrls = new Set<string>(pdfUrls)
               for (const file of files) {
                 if (file.type === 'application/pdf') {
-                  newUrls.add(URL.createObjectURL(file))
+                  setPdfs(prevPdfs => new Set([...prevPdfs, file]))
                 } else {
                   toast.error(
                     `File ${file.name} is not a valid PDF. Please select only PDF files.`,
@@ -166,7 +198,6 @@ export default function SlrForm () {
                   )
                 }
               }
-              setPdfUrls(newUrls)
               e.target.value = ''
             }}
             aria-label='Select local PDF files'
@@ -187,7 +218,7 @@ export default function SlrForm () {
             <span className='text-green-600 text-sm'>Valid PDF URL</span>
           )}
         </div>
-        {pdfUrls.size > 0 && (
+        {pdfs.size > 0 && (
           <div className='flex flex-col gap-y-2'>
             <div className='flex items-center justify-between mb-2'>
               <h3 className='text-xl font-semibold bg-gradient-to-r from-sky-50 to-sky-200 bg-clip-text text-transparent'>
@@ -195,76 +226,82 @@ export default function SlrForm () {
               </h3>
               <div className='flex items-center gap-2 px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full'>
                 <span className='text-sm font-medium text-slate-600 dark:text-slate-300'>
-                  {pdfUrls.size} {pdfUrls.size === 1 ? 'document' : 'documents'}
+                  {pdfs.size} {pdfs.size === 1 ? 'document' : 'documents'}
                 </span>
               </div>
             </div>
             <ul className='grid gap-3'>
-              {Array.from(pdfUrls).map((url, index) => (
+              {Array.from(pdfs).map((pdf, index) => (
                 <li
-                  key={url}
+                  key={typeof pdf === 'string' ? pdf : URL.createObjectURL(pdf)}
                   className={cn(
                     'group flex items-center gap-3 p-4 bg-gradient-to-r outline rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.01] from-zinc-50 to-zinc-100 dark:from-zinc-900/50 dark:to-zinc-950/50 hover:from-zinc-100 hover:to-zinc-150 dark:hover:from-zinc-800/50 dark:hover:to-zinc-900/50',
                     {
                       'outline-amber-200 dark:outline-amber-700':
-                        url.startsWith('blob:'),
+                        pdf instanceof File,
                       'outline-blue-200 dark:outline-blue-700':
-                        url.startsWith('http') || url.startsWith('https')
+                        typeof pdf === 'string' &&
+                        (pdf.startsWith('http') || pdf.startsWith('https'))
                     }
                   )}
                 >
                   <div
                     className={cn('flex-shrink-0 p-2 rounded-lg', {
-                      'bg-amber-100 dark:bg-amber-900/30':
-                        url.startsWith('blob:'),
+                      'bg-amber-100 dark:bg-amber-900/30': pdf instanceof File,
                       'bg-blue-100 dark:bg-blue-900/30':
-                        url.startsWith('http') || url.startsWith('https')
+                        typeof pdf === 'string' &&
+                        (pdf.startsWith('http') || pdf.startsWith('https'))
                     })}
                   >
-                    {url.startsWith('blob:') && (
+                    {pdf instanceof File && (
                       <FileIcon
                         size={18}
                         className='text-amber-600 dark:text-amber-400'
                       />
                     )}
-                    {(url.startsWith('http') || url.startsWith('https')) && (
-                      <ExternalLinkIcon
-                        size={18}
-                        className='text-blue-600 dark:text-blue-400'
-                      />
-                    )}
+                    {typeof pdf === 'string' &&
+                      (pdf.startsWith('http') || pdf.startsWith('https')) && (
+                        <ExternalLinkIcon
+                          size={18}
+                          className='text-blue-600 dark:text-blue-400'
+                        />
+                      )}
                   </div>
 
                   <div className='flex-1 min-w-0'>
                     <a
-                      href={url}
+                      href={
+                        typeof pdf === 'string' ? pdf : URL.createObjectURL(pdf)
+                      }
                       target='_blank'
                       rel='noopener noreferrer'
                       className={cn(
                         'block hover:underline text-sm md:break-normal break-all overflow-ellipsis font-medium truncate transition-colors duration-200 text-wrap',
                         {
                           'text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200':
-                            url.startsWith('blob:'),
+                            typeof pdf === 'string' && pdf.startsWith('blob:'),
                           'text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200':
-                            url.startsWith('http') || url.startsWith('https')
+                            typeof pdf === 'string' &&
+                            (pdf.startsWith('http') || pdf.startsWith('https'))
                         }
                       )}
-                      title={url}
+                      title={pdf instanceof File ? pdf.name : pdf}
                     >
-                      {url}
+                      {pdf instanceof File ? pdf.name : pdf}
                     </a>
                     <p
                       className={cn(
                         'text-xs text-slate-500 dark:text-slate-400 mt-1',
                         {
                           'text-amber-500 dark:text-amber-400':
-                            url.startsWith('blob:'),
+                            pdf instanceof File,
                           'text-sky-500 dark:text-sky-400':
-                            url.startsWith('http') || url.startsWith('https')
+                            typeof pdf === 'string' &&
+                            (pdf.startsWith('http') || pdf.startsWith('https'))
                         }
                       )}
                     >
-                      {url.startsWith('blob:') ? 'Local PDF' : 'External PDF'} #
+                      {pdf instanceof File ? 'Local PDF' : 'External PDF'} #
                       {index + 1}
                     </p>
                   </div>
@@ -275,10 +312,10 @@ export default function SlrForm () {
                     size='sm'
                     className='flex-shrink-0 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-800/20 border-red-200 dark:border-red-800 hover:cursor-pointer transition-colors duration-200 opacity-80 group-hover:opacity-100'
                     onClick={() =>
-                      setPdfUrls(prevUrls => {
-                        const newUrls = new Set(prevUrls)
-                        newUrls.delete(url)
-                        return newUrls
+                      setPdfs(prevPdfs => {
+                        const newPdfs = new Set(prevPdfs)
+                        newPdfs.delete(pdf)
+                        return newPdfs
                       })
                     }
                   >
@@ -289,7 +326,7 @@ export default function SlrForm () {
             </ul>
           </div>
         )}
-        <SubmitButton isDisabled={pdfUrls.size === 0} />
+        <SubmitButton isDisabled={pdfs.size === 0} />
       </form>
       {slrAnalysisState.success && slrAnalysisState.slrAnalysis.length > 0 && (
         <>
