@@ -70,16 +70,6 @@ export default function SlrResults ({
                     </span>
                   </div>
                 )}
-                {article.numberOfCitations != null && (
-                  <div>
-                    <span className='font-medium text-gray-700 dark:text-sky-100'>
-                      {t('numberOfCitations')}
-                    </span>
-                    <span className='ml-2 text-gray-600 dark:text-gray-400'>
-                      {article.numberOfCitations}
-                    </span>
-                  </div>
-                )}
                 {article.countries && article.countries.length > 0 && (
                   <div>
                     <span className='font-medium text-gray-700 dark:text-sky-100'>
