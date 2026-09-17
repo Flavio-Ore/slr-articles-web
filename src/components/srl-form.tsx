@@ -1,19 +1,32 @@
 'use client'
 
+import { srlAnalysis } from '#/app/(root)/actions'
+import PdfViewer from '#/components/pdf-viewer'
 import { useDebounce } from '#/hooks/use-debounce'
 import { cn } from '#/lib/utils'
 import { checkIsValidPdfUrl } from '#/utils/check-is-valid-pdf-url'
+import { Button } from '#shadcn/button'
+import { Input } from '#shadcn/input'
 import { Plus } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import PdfViewer from './pdf-viewer'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
+import { useFormState, useFormStatus } from 'react-dom'
 
 export default function SlrForm () {
   const [inputValue, setInputValue] = useState<string>('')
   const debouncedValue = useDebounce(inputValue)
   const [pdfUrls, setPdfUrls] = useState(new Set<string>())
   const [isError, setIsError] = useState<boolean>(false)
+
+  const [slrAnalysisState, action] = useFormState(srlAnalysis, {
+    pdfUrls,
+    message: 'useFormState initial state',
+    slrAnalysis: [],
+    success: true
+  })
+
+  console.log({
+    slrAnalysisState
+  })
 
   const isRepeatedPdfUrl = useMemo(
     () => pdfUrls.has(debouncedValue),
@@ -27,7 +40,7 @@ export default function SlrForm () {
   )
 
   return (
-    <form className='w=full flex flex-col gap-y-1'>
+    <form action={action} className='w=full flex flex-col gap-y-1'>
       <div className='flex flex-col mb-4 gap-y-2'>
         {!isValidPdfUrl && debouncedValue !== '' && (
           <span className='text-red-600 mt-2'>
@@ -57,7 +70,7 @@ export default function SlrForm () {
             )}
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
-            placeholder='https://example.com/article.pdf'
+            placeholder='Enter your Scientific Article PDF URL...'
             pattern='https?://.+\.pdf'
             required
           />
@@ -96,7 +109,7 @@ export default function SlrForm () {
         )}
       </div>
       {pdfUrls.size > 0 && (
-        <div className='mt-4'>
+        <div className='flex flex-col gap-y-2'>
           <h3 className='text-xl font-semibold'>Selected PDFs:</h3>
           <ul className='flex flex-col list-disc pl-5 mt-2'>
             {Array.from(pdfUrls).map((url, index) => (
@@ -110,7 +123,7 @@ export default function SlrForm () {
                   >
                     {url}
                   </a>
-                  <button
+                  <Button
                     className='text-red-900 hover:text-red-700 hover:cursor-pointer p-4 text-xs bg-slate-900 border border-red-950 rounded-md disabled:opacity-50 disabled:cursor-not-allowed'
                     onClick={() =>
                       setPdfUrls(prev => {
@@ -121,20 +134,37 @@ export default function SlrForm () {
                     }
                   >
                     Remove
-                  </button>
+                  </Button>
                 </div>
               </li>
             ))}
           </ul>
         </div>
       )}
-      <Button
-        type='submit'
-        className='mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
-        disabled={pdfUrls.size === 0 || isError}
-      >
-        Start Analysis
-      </Button>
+      <SubmitButton pdfUrlsSize={pdfUrls.size} isError={isError} />
     </form>
+  )
+}
+
+export function SubmitButton ({
+  pdfUrlsSize = 0,
+  isError = false
+}: {
+  pdfUrlsSize?: number
+  isError?: boolean
+}) {
+  const formStatus = useFormStatus()
+  return (
+    <Button
+      type='submit'
+      className='mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+      disabled={pdfUrlsSize === 0 || isError}
+    >
+      {formStatus.pending
+        ? 'Submitting...'
+        : pdfUrlsSize > 0
+        ? 'Start Systematic Literature Review'
+        : 'Add PDF URLs to start SLR'}
+    </Button>
   )
 }
