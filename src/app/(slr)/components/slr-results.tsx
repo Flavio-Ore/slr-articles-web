@@ -1,6 +1,7 @@
 'use client'
 
 import type { SlrAnalysis } from '#/schemas/slr-analysis-response.schema'
+import SlrWordChart from './slr-word-chart'
 
 export default function SlrResults ({
   slrAnalysis
@@ -18,7 +19,7 @@ export default function SlrResults ({
             key={index}
             className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200'
           >
-            <div className='space-y-4'>
+            <div className='space-y-4 mb-8'>
               <div className='flex flex-col space-y-2'>
                 <h3 className='text-xl font-semibold text-gray-900 dark:text-gray-100'>
                   {article.title}
@@ -151,6 +152,12 @@ export default function SlrResults ({
                 </p>
               </div>
             </div>
+            <SlrWordChart
+              abstractWords={article.abstractWords}
+              titleWords={article.titleWords}
+              technicalTerms={article.technicalTerms}
+              mostFrequentWords={article.mostFrequentWords}
+            />
           </div>
         ))}
       </div>
