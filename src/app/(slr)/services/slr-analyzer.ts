@@ -1,7 +1,7 @@
-import { uploadRemotePdfUrl } from "#/app/(slr)/services/upload-remote-pdf-url";
-import { ai } from "#/config/ai";
-import type { SlrAnalysis } from "#/schemas/slr-analysis-response.schema";
-import { createPartFromUri, type Part } from "@google/genai";
+import { uploadRemotePdfUrl } from '#/app/(slr)/services/upload-remote-pdf-url'
+import { ai } from '#/config/ai'
+import type { SlrAnalysis } from '#/schemas/slr-analysis-response.schema'
+import { createPartFromUri, type Part } from '@google/genai'
 
 const PROMPT: (string | Part)[] = [
   `Analyze the following scientific papers. For each paper, extract the following information:
@@ -41,37 +41,41 @@ const PROMPT: (string | Part)[] = [
           "conclusion": "In conclusion, LLMs have shown remarkable capabilities but also present significant challenges..."
         }
       ]
-      `,
-];
+      `
+]
 
-export async function slrAnalyzer({ pdfUrls = [] }: { pdfUrls: string[] }): Promise<SlrAnalysis[]> {
+export async function slrAnalyzer ({
+  pdfUrls = []
+}: {
+  pdfUrls: string[]
+}): Promise<SlrAnalysis[]> {
   for (const [index, url] of pdfUrls.entries()) {
-    const file = await uploadRemotePdfUrl(url, `PDF ${index + 1}`);
+    const file = await uploadRemotePdfUrl(url, `PDF ${index + 1}`)
     if (file != null && file.uri && file.mimeType) {
-      const fileContent = createPartFromUri(file.uri, file.mimeType);
+      const fileContent = createPartFromUri(file.uri, file.mimeType)
       console.log({
         fileContent
       })
-      PROMPT.push(fileContent);
+      PROMPT.push(fileContent)
     }
   }
 
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
+    model: 'gemini-2.5-flash',
     contents: PROMPT,
     config: {
-      responseMimeType: 'application/json',
+      responseMimeType: 'application/json'
     }
-  });
+  })
 
   console.log({
-    responseText: response?.text,
+    responseText: response?.text
   })
 
   try {
-    return JSON.parse(response?.text ?? '');
+    return JSON.parse(response?.text ?? '')
   } catch (error) {
-    console.error("Error parsing JSON response:", error);
-    return [];
+    console.error('Error parsing JSON response:', error)
+    return []
   }
 }

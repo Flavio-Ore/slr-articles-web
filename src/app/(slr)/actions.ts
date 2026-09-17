@@ -1,8 +1,8 @@
 'use server'
 
-import type { SlrAnalysis } from "#/schemas/slr-analysis-response.schema"
-import { revalidatePath } from "next/cache"
-import { slrAnalyzer } from "./services/slr-analyzer"
+import type { SlrAnalysis } from '#/schemas/slr-analysis-response.schema'
+import { revalidatePath } from 'next/cache'
+import { slrAnalyzer } from './services/slr-analyzer'
 
 interface SrlAnalysisResponse {
   slrAnalysis: SlrAnalysis[]
@@ -10,7 +10,7 @@ interface SrlAnalysisResponse {
   message: string
 }
 
-export async function srlAnalysis(
+export async function srlAnalysis (
   prevState: {
     success: boolean
     slrAnalysis: SlrAnalysis[]
@@ -37,14 +37,15 @@ export async function srlAnalysis(
     return {
       slrAnalysis,
       success: true,
-      message: 'SLR analysis run successfully.',
+      message: 'SLR analysis run successfully.'
     } as SrlAnalysisResponse
   } catch (error) {
     console.trace('Error during SLR analysis:', error)
     return {
       slrAnalysis: [],
       success: false,
-      message: 'There was an error starting the SLR analysis. Please try again later.'
+      message:
+        'There was an error starting the SLR analysis. Please try again later.'
     } as SrlAnalysisResponse
   }
 }
