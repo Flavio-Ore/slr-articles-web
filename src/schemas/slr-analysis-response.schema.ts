@@ -20,6 +20,15 @@ export const SlrAnalysisSchema = z.object({
   quartiles: z.string(),
   resume: z.string(),
   keywords: z.array(z.string()),
-  conclusion: z.string()
+  conclusion: z.string(),
+  mostFrequentWords: z.array(
+    z.object({
+      word: z.string(),
+      count: z.number()
+    })
+  ),
+  titleWords: z.array(z.string()),
+  abstractWords: z.array(z.string()),
+  technicalTerms: z.array(z.string())
 })
 export type SlrAnalysis = z.infer<typeof SlrAnalysisSchema>
